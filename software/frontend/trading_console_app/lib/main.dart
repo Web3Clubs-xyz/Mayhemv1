@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(TradingConsoleApp());
@@ -21,52 +22,58 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Trading Console'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildOptionCard(
-                  context,
-                  icon: Icons.security,
-                  label: 'Secure',
-                  screen: const SecureScreen(),
-                ),
-                _buildOptionCard(
-                  context,
-                  icon: Icons.monetization_on,
-                  label: 'Stake',
-                  screen: const StakeScreen(),
-                ),
-                _buildOptionCard(
-                  context,
-                  icon: Icons.trending_up,
-                  label: 'Trading',
-                  screen: const TradingScreen(),
-                ),
-                _buildOptionCard(
-                  context,
-                  icon: Icons.videogame_asset,
-                  label: 'Gaming',
-                  screen: const GamingScreen(),
-                ),
-                _buildOptionCard(
-                  context,
-                  icon: Icons.settings_input_antenna,
-                  label: 'DePIN',
-                  screen: const DePINScreen(),
-                ),
-              ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Center(
+            child: Container(
+              width: 1024,
+              height: 600,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.security,
+                        label: 'Secure',
+                        screen: const SecureScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.monetization_on,
+                        label: 'Stake',
+                        screen: const StakeScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.trending_up,
+                        label: 'Trading',
+                        screen: const TradingScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.videogame_asset,
+                        label: 'Gaming',
+                        screen: const GamingScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.settings_input_antenna,
+                        label: 'DePIN',
+                        screen: const DePINScreen(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -82,12 +89,10 @@ class HomeScreen extends StatelessWidget {
       },
       child: Column(
         children: [
-          Icon(icon, size: 36, color: Colors.blue), // Adjusted size
+          Icon(icon, size: 50, color: Colors.blue),
           SizedBox(height: 8),
           Text(label,
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold)), // Adjusted text size
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -126,8 +131,35 @@ class TradingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Trading')),
-      body:
-          Center(child: Text('Trading Screen', style: TextStyle(fontSize: 24))),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildLinkButton('Uniswap', 'https://app.uniswap.org'),
+            _buildLinkButton('Aave', 'https://app.aave.com'),
+            _buildLinkButton('Dexscreener', 'https://dexscreener.com'),
+            _buildLinkButton('Bybit', 'https://www.bybit.com'),
+            _buildLinkButton('Binance', 'https://www.binance.com'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLinkButton(String label, String url) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            throw 'Could not launch $url';
+          }
+        },
+        child: Text(label),
+      ),
     );
   }
 }
