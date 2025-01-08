@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(TradingConsoleApp());
@@ -39,9 +39,33 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       _buildOptionCard(
                         context,
+                        icon: Icons.security,
+                        label: 'Secure',
+                        screen: const SecureScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.monetization_on,
+                        label: 'Stake',
+                        screen: const StakeScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
                         icon: Icons.trending_up,
                         label: 'Trading',
                         screen: const TradingScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.videogame_asset,
+                        label: 'Gaming',
+                        screen: const GamingScreen(),
+                      ),
+                      _buildOptionCard(
+                        context,
+                        icon: Icons.settings_input_antenna,
+                        label: 'DePIN',
+                        screen: const DePINScreen(),
                       ),
                     ],
                   ),
@@ -75,6 +99,31 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class SecureScreen extends StatelessWidget {
+  const SecureScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Secure')),
+      body:
+          Center(child: Text('Secure Screen', style: TextStyle(fontSize: 24))),
+    );
+  }
+}
+
+class StakeScreen extends StatelessWidget {
+  const StakeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Stake')),
+      body: Center(child: Text('Stake Screen', style: TextStyle(fontSize: 24))),
+    );
+  }
+}
+
 class TradingScreen extends StatelessWidget {
   const TradingScreen({Key? key}) : super(key: key);
 
@@ -86,28 +135,28 @@ class TradingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildLinkButton(context, 'Uniswap', 'https://app.uniswap.org'),
-            _buildLinkButton(context, 'Aave', 'https://app.aave.com'),
-            _buildLinkButton(context, 'Dexscreener', 'https://dexscreener.com'),
-            _buildLinkButton(context, 'Bybit', 'https://www.bybit.com'),
-            _buildLinkButton(context, 'Binance', 'https://www.binance.com'),
+            _buildLinkButton('Uniswap', 'https://app.uniswap.org'),
+            _buildLinkButton('Aave', 'https://app.aave.com'),
+            _buildLinkButton('Dexscreener', 'https://dexscreener.com'),
+            _buildLinkButton('Bybit', 'https://www.bybit.com'),
+            _buildLinkButton('Binance', 'https://www.binance.com'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLinkButton(BuildContext context, String label, String url) {
+  Widget _buildLinkButton(String label, String url) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WebViewScreen(url: url),
-            ),
-          );
+        onPressed: () async {
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            throw 'Could not launch $url';
+          }
         },
         child: Text(label),
       ),
@@ -115,21 +164,27 @@ class TradingScreen extends StatelessWidget {
   }
 }
 
-class WebViewScreen extends StatelessWidget {
-  final String url;
-
-  const WebViewScreen({Key? key, required this.url}) : super(key: key);
+class GamingScreen extends StatelessWidget {
+  const GamingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Web View')),
-      body: InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(url)),
-        onProgressChanged: (controller, progress) {
-          debugPrint('Loading: $progress%');
-        },
-      ),
+      appBar: AppBar(title: Text('Gaming')),
+      body:
+          Center(child: Text('Gaming Screen', style: TextStyle(fontSize: 24))),
+    );
+  }
+}
+
+class DePINScreen extends StatelessWidget {
+  const DePINScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('DePIN')),
+      body: Center(child: Text('DePIN Screen', style: TextStyle(fontSize: 24))),
     );
   }
 }
