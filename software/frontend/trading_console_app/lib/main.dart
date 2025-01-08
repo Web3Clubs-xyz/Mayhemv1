@@ -126,8 +126,20 @@ class TradingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Trading')),
-      body:
-          Center(child: Text('Trading Screen', style: TextStyle(fontSize: 24))),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Trading Screen', style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.swap_horizontal_circle), // Uniswap icon
+              label: Text('Go to Uniswap'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
